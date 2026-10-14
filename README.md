@@ -29,8 +29,28 @@
 /plugin install https://github.com/skyjjgw/tianshu-connect-workbuddy
 ```
 
-网络受限、拉不动 GitHub 时，也可以从**本地目录**安装——先下载或解压出仓库，
-再把路径换成你自己的：
+### 拉不动 GitHub 时
+
+GitHub 直连不稳定的话，可以套一层代理前缀（把原地址接在代理域名后面）：
+
+```text
+/plugin install https://gh-proxy.com/https://github.com/skyjjgw/tianshu-connect-workbuddy
+```
+
+以下代理实测可克隆本仓库（2026-10 验证，内容与 GitHub 一致）：
+
+| 代理 | 地址格式 |
+| --- | --- |
+| gh-proxy | `https://gh-proxy.com/https://github.com/<owner>/<repo>` |
+| ghfast | `https://ghfast.top/https://github.com/<owner>/<repo>` |
+| ghproxy.net | `https://ghproxy.net/https://github.com/<owner>/<repo>` |
+
+这些是公共代理，可用性会变；连不上就换一个。**不要**用 `hub.fastgit.xyz`——
+它对本仓库返回空仓库，会伪装成克隆成功。
+
+### 完全离线安装
+
+网络实在不通时，用本地目录安装——先把仓库下载或拷贝到本机，再把路径换成你自己的：
 
 ```text
 /plugin install D:\path\to\tianshu-connect-workbuddy
