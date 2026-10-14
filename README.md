@@ -29,9 +29,19 @@
 /plugin install https://github.com/skyjjgw/tianshu-connect-workbuddy
 ```
 
-### 拉不动 GitHub 时
+### 国内网络（推荐用 Gitee 镜像）
 
-GitHub 直连不稳定的话，可以套一层代理前缀（把原地址接在代理域名后面）：
+GitHub 直连不稳定的话，直接装 Gitee 镜像——国内直连，不需要任何代理：
+
+```text
+/plugin install https://gitee.com/skyjjgw/tianshu-connect-workbuddy
+```
+
+两个仓库内容一致，GitHub 是主仓库、Gitee 是镜像。
+
+### 用代理前缀
+
+也可以给 GitHub 地址套一层代理（把原地址接在代理域名后面）：
 
 ```text
 /plugin install https://ghfast.top/https://github.com/skyjjgw/tianshu-connect-workbuddy

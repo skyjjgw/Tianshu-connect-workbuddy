@@ -10,7 +10,16 @@ Install from a Tianshu session:
 /plugin install https://github.com/skyjjgw/tianshu-connect-workbuddy
 ```
 
-If GitHub is unreachable from your network, prepend a proxy prefix:
+On networks where GitHub is slow or blocked, use the Gitee mirror (fast in
+mainland China, no proxy needed):
+
+```text
+/plugin install https://gitee.com/skyjjgw/tianshu-connect-workbuddy
+```
+
+Both remotes carry identical content; GitHub is the primary, Gitee the mirror.
+
+Alternatively, prepend a proxy prefix to the GitHub URL:
 
 ```text
 /plugin install https://ghfast.top/https://github.com/skyjjgw/tianshu-connect-workbuddy
