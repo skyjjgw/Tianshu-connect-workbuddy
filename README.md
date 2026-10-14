@@ -34,19 +34,20 @@
 GitHub 直连不稳定的话，可以套一层代理前缀（把原地址接在代理域名后面）：
 
 ```text
-/plugin install https://gh-proxy.com/https://github.com/skyjjgw/tianshu-connect-workbuddy
+/plugin install https://ghfast.top/https://github.com/skyjjgw/tianshu-connect-workbuddy
 ```
 
-以下代理实测可克隆本仓库（2026-10 验证，内容与 GitHub 一致）：
+以下代理实测可克隆本仓库（2026-10-14 验证，均含 `lib/`、HEAD 与 GitHub 一致）：
 
 | 代理 | 地址格式 |
 | --- | --- |
-| gh-proxy | `https://gh-proxy.com/https://github.com/<owner>/<repo>` |
 | ghfast | `https://ghfast.top/https://github.com/<owner>/<repo>` |
 | ghproxy.net | `https://ghproxy.net/https://github.com/<owner>/<repo>` |
+| gh.llkk.cc | `https://gh.llkk.cc/https://github.com/<owner>/<repo>` |
 
-这些是公共代理，可用性会变；连不上就换一个。**不要**用 `hub.fastgit.xyz`——
-它对本仓库返回空仓库，会伪装成克隆成功。
+这些是公共代理，可用性会变——同一个地址可能今天通、明天 403。**换一个再试**
+通常就好了。已知不可用/有坑的：`gh-proxy.com`（服务端 403）、
+`hub.fastgit.xyz`（返回空仓库，会伪装成克隆成功）。
 
 ### 完全离线安装
 
