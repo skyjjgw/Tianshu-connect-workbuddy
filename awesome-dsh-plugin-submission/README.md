@@ -4,12 +4,14 @@
 
 ## 当前状态
 
-- **正式提交**：PR [#3812](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/3812) —— `data/plugins/dingminhua__dsh-connect-workbuddy.yml`
-- **CI**：`check` 与 `Submission gate` 均已通过 ✅
-- **合并**：等待维护者 review 合并（对方仓库，需等）
-- **截图**：声明在**本项目自己仓库**的 [`screenshots.json`](../screenshots.json)，未修改注册表 `data/screenshots.json`（该文件是旧约定回退，禁止再加新键）
+- **本仓库**：`skyjjgw/tianshu-connect-workbuddy`，尚未提交注册表 PR
+- **草稿**：[`skyjjgw__tianshu-connect-workbuddy.yml`](./skyjjgw__tianshu-connect-workbuddy.yml)
+- **前置条件**：需仓库打 `dsh-plugin` topic，且满足注册表的收录门槛（见下）
 
-## 收录目录规范（依据 [contributing.md](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/contributing.md)）
+> 上游 `dingminhua/dsh-connect-workbuddy` 曾以 PR #3812 提交过同一插件的早期版本。
+> 本仓库是其派生，独立维护——若提交注册表，应作为**新条目**而非修改上游那条。
+
+## 收录目录规范（依据 contributing.md）
 
 - 每个插件一个 YAML：`data/plugins/<owner>__<repo>.yml`
 - 字段：
@@ -19,7 +21,7 @@
   - `description.en`：必填，一行，以句号结尾；含 `: ` 必须加引号
   - `description.zh`：可选，维护者会补
 - 前置要求：
-  - 仓库 `package.json` 声明 `dsh.bundle` manifest（本项目 `dsh.bundle.patch: ./cordis.patch.yml`）
+  - 仓库 `package.json` 声明对应 manifest
   - 仓库打 `dsh-plugin` topic
   - 仓库满 1 天、提交数 ≥ 10（CI 自动检查）
 - README（`README.md` / `README.zh.md`）由脚本生成，**不要手工编辑**；改 YAML 后执行：
@@ -29,9 +31,9 @@
   ```
 - 一个 PR 最多收录 3 条；只改自己的条目。
 
-## 更新步骤（改条目内容时）
+## 更新步骤（提交或改条目时）
 
-1. 修改本目录的 `dingminhua__dsh-connect-workbuddy.yml` 草稿
-2. 在 fork 分支 `add-dsh-connect-workbuddy` 上同步修改 `data/plugins/dingminhua__dsh-connect-workbuddy.yml`
+1. 修改本目录的 `skyjjgw__tianshu-connect-workbuddy.yml` 草稿
+2. 在 fork 分支上同步新增 `data/plugins/skyjjgw__tianshu-connect-workbuddy.yml`
 3. 重新生成 README（见上）
 4. 推送，PR 自动重跑 CI

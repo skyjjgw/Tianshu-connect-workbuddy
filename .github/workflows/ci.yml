@@ -22,28 +22,39 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
-
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 22
-          cache: pnpm
+          cache: npm
 
+      # 本插件的运行时依赖为空，devDependencies 只有 typescript / tsdown /
+      # @types/node，用 npm 即可。上游曾用 pnpm + 一份 pnpm-workspace.yaml，
+      # 但那份 workspace 声明的 28 个 @deepseek-ai/* overrides 全是上游 DSH
+      # 项目的依赖，本仓库一个都不用——只会让 CI 在安装阶段就失败。
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Typecheck
-        run: pnpm run typecheck
+        run: npm run typecheck
 
       - name: Run tests
-        run: pnpm run test
+        run: npm run test
 
       - name: Build
-        run: pnpm run build
+        run: npm run build
+
+      # 构建产物 lib/ 是入库的（插件入口是 lib/index.js，见 package.json 的
+      # tianshu.entry），这里校验重新构建后与入库版本一致——防止源码改了却
+      # 忘了提交新构建，那会让安装方拿到过期的插件。
+      - name: Verify build output is committed
+        shell: bash
+        run: |
+          if [ -n "$(git status --porcelain lib/)" ]; then
+            echo "::error::lib/ 与源码不同步——请运行 npm run build 并提交结果"
+            git --no-pager diff --stat lib/
+            exit 1
+          fi
 
       - name: Verify package contents
         run: npm pack --dry-run

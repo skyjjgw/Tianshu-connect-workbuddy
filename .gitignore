@@ -1,9 +1,18 @@
 node_modules/
 .pnpm-store/
-lib/
 coverage/
 *.log
 .env
 .DS_Store
 .dsh-vision-router/
 .dsh-npm-cache/
+
+# `lib/` 是构建产物，但**必须入库**。
+#
+# 插件入口是 `lib/index.js`（见 package.json 的 tianshu.entry）。若不入库，
+# 安装方必须自己 `npm install && npm run build` 才能跑起来——而这两步都要联网
+# 拉 devDependencies（tsdown / typescript）。国内网络下这一步经常失败，表现
+# 为 clone 或安装中断，用户看到的却是「装上了但没反应」。
+#
+# `lib/` 是自包含的：只 import node: 内置模块，没有任何运行时依赖（package.json
+# 的 dependencies 为空）。入库后 clone 即可用，无需联网构建。

@@ -26,14 +26,17 @@
 在天枢会话中执行：
 
 ```text
-/plugin install https://github.com/skyjjgw/Tianshu-connect-workbuddy
+/plugin install https://github.com/skyjjgw/tianshu-connect-workbuddy
 ```
 
-也可以从本地检出安装：
+网络受限、拉不动 GitHub 时，也可以从**本地目录**安装——先下载或解压出仓库，
+再把路径换成你自己的：
 
 ```text
-/plugin install E:\dshgf\Tianshu-connect-workbuddy
+/plugin install D:\path\to\tianshu-connect-workbuddy
 ```
+
+构建产物 `lib/` 已随仓库提供，本地安装无需联网、也无需自行构建。
 
 插件工具在新会话生效。重开会话后执行：
 

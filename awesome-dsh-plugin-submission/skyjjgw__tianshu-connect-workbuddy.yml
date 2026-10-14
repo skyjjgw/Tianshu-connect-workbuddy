@@ -1,0 +1,6 @@
+url: https://github.com/skyjjgw/tianshu-connect-workbuddy
+name: skyjjgw/tianshu-connect-workbuddy
+category: model
+description:
+  en: Connects locally signed-in WorkBuddy models to Tianshu as a native plugin, with in-process sidecar discovery, stale-server-info self-healing, and Provider auto-registration on startup.
+  zh: 把本机已登录的 WorkBuddy 模型作为天枢原生插件接入，含进程内 sidecar 发现、陈旧 server-info 自愈、以及启动时自动注册 Provider。
