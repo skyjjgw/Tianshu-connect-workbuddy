@@ -92,3 +92,18 @@ test('create() 不阻塞在网络刷新上（启用耗时不随网络变化）',
     'create() 不得 await refresh()：网络慢会撞上天枢的插件加载超时',
   )
 })
+
+test('refresh 并行处理区域，且支持自定义超时（setup 不得串行等 30s×N）', () => {
+  const src = readFileSync(new URL('../src/tianshu-runtime.ts', import.meta.url), 'utf8')
+  const refreshBody = src.slice(
+    src.indexOf('async refresh(region?: WorkBuddyRegion, timeoutMs?: number)'),
+    src.indexOf('private providerPayload('),
+  )
+  // 不得用 for-of 串行 await——两个区域会叠加超时
+  assert.doesNotMatch(
+    refreshBody,
+    /for\s*\(const\s+\w+\s+of\s+targets\)/,
+    'refresh 不得串行遍历区域：cn 30s + global 30s = 最坏 60s',
+  )
+  assert.match(refreshBody, /Promise\.all/, 'refresh 应并行处理区域')
+})

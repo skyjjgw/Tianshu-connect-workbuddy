@@ -23,6 +23,15 @@ export const REGIONS = ['cn', 'global'] as const satisfies readonly WorkBuddyReg
 const DEFAULT_PORTS: Record<WorkBuddyRegion, number> = { cn: 28791, global: 28792 }
 const REFRESH_MS = 30 * 60_000
 const PROXY_BODY_LIMIT = 128 * 1024 * 1024
+/**
+ * `setup()` 里刷新模型的超时上限。
+ *
+ * 交互路径——用户在界面上点「接入」时会等它。上游不可达时，各请求自己的
+ * 默认超时是 30s（`JSON_TIMEOUT_MS`），两个区域并行也还有 30s，界面会一直
+ * 转圈。8s 足够正常网络下拿到模型目录（实测约 0.6s），又能在断网时尽快
+ * 返回一个「拉不到」的结论。
+ */
+const SETUP_REFRESH_TIMEOUT_MS = 8_000
 
 interface RuntimeConfig {
   host: '127.0.0.1'
@@ -370,32 +379,42 @@ export class WorkBuddyTianshuRuntime {
     })
   }
 
-  async refresh(region?: WorkBuddyRegion): Promise<Record<string, unknown>> {
+  /**
+   * 刷新模型目录。
+   *
+   * 并行处理各区域，不串行——串行会让超时叠加：单区域 `JSON_TIMEOUT_MS` 是
+   * 30s，两个区域排队最坏 60s，而调用方（`setup()`、登录完成回调）都在等它，
+   * 用户在界面上就会看到「接入」卡住不动。
+   *
+   * `timeoutMs` 用于交互路径：用户在等的时候用更短的超时尽快给出结果，失败
+   * 也只是 catalog 为空（表现为「没有模型」），比无限转圈好。后台定时刷新
+   * 不传，沿用各请求自己的默认超时。
+   */
+  async refresh(region?: WorkBuddyRegion, timeoutMs?: number): Promise<Record<string, unknown>> {
     const targets = region === undefined ? REGIONS : [region]
-    const results: Record<string, unknown> = {}
-    for (const current of targets) {
+    const signal = timeoutMs === undefined ? undefined : AbortSignal.timeout(timeoutMs)
+    const entries = await Promise.all(targets.map(async current => {
       const stack = this.stacks[current]
       try {
         const accounts = await stack.store.accounts()
         if (accounts.length === 0) {
           stack.catalog.setRegionUsable(false)
           stack.account = { error: '未登录' }
-          results[current] = { ok: false, signedIn: false, error: '未登录' }
-          continue
+          return [current, { ok: false, signedIn: false, error: '未登录' }] as const
         }
         stack.catalog.setRegionUsable(true)
         const credential = await stack.store.resolve()
-        const models = await this.client.fetchModels(credential)
+        const models = await this.client.fetchModels(credential, signal)
         stack.catalog.set(models)
         stack.account = { domain: credential.domain }
-        results[current] = { ok: true, signedIn: true, models: models.length }
+        return [current, { ok: true, signedIn: true, models: models.length }] as const
       } catch (error) {
         const message = safeMessage(error)
         stack.account = { error: message }
-        results[current] = { ok: false, error: message }
+        return [current, { ok: false, error: message }] as const
       }
-    }
-    return results
+    }))
+    return Object.fromEntries(entries)
   }
 
   private providerPayload(region: WorkBuddyRegion): Record<string, unknown> {
@@ -418,7 +437,10 @@ export class WorkBuddyTianshuRuntime {
   }
 
   async setup(region?: WorkBuddyRegion): Promise<{ ok: boolean, regions: Record<string, SetupRegionResult> }> {
-    await this.refresh(region)
+    // 交互路径：用户在界面上点「接入」时会等这一步，不能让它挂满默认的
+    // 30s×N。用 8s 上限尽快给出结论——拉不到模型就报 skipped/失败，
+    // 比让界面转圈到超时好。后台定时刷新不设这个限制。
+    await this.refresh(region, SETUP_REFRESH_TIMEOUT_MS)
     const targets = region === undefined ? REGIONS : [region]
     const regions: Record<string, SetupRegionResult> = {}
     for (const current of targets) {
@@ -511,7 +533,9 @@ export class WorkBuddyTianshuRuntime {
       ...(result.account.enterpriseId === undefined ? {} : { enterpriseId: result.account.enterpriseId }),
     })
     this.stacks[region].store.selectAccount(accountId)
-    await this.refresh(region)
+    // 同上：登录完成是交互路径，用户在等结果。setup() 内部还会再刷一次，
+    // 这里只需让 catalog 就绪，用同一个短超时。
+    await this.refresh(region, SETUP_REFRESH_TIMEOUT_MS)
     const registered = await this.setup(region)
     return { ok: registered.ok, pending: false, accountId, registered }
   }
