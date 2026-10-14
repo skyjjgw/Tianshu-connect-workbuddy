@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": [
+    "src/tianshu-core.ts",
+    "src/tianshu-discovery.ts",
+    "src/tianshu-runtime.ts",
+    "src/tianshu-plugin.ts",
+    "src/tianshu-cli.ts"
+  ],
+  "exclude": ["src/client", "tests"]
+}

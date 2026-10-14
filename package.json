@@ -1,0 +1,87 @@
+{
+  "name": "tianshu-connect-workbuddy",
+  "displayName": "Tianshu Connect WorkBuddy",
+  "description": "天枢原生插件：复用本机 WorkBuddy 登录，接入模型、余额、倍率与网页登录。",
+  "version": "1.0.0",
+  "author": "skyjjgw",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "main": "lib/index.js",
+  "bin": {
+    "tianshu-connect-workbuddy": "lib/cli.js"
+  },
+  "files": [
+    "lib",
+    "commands",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "keywords": [
+    "tianshu-plugin",
+    "tianshu",
+    "workbuddy",
+    "codebuddy",
+    "model-provider"
+  ],
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "tsdown",
+    "typecheck": "tsc -p tsconfig.tianshu.json",
+    "test": "node --test tests/tianshu-plugin.test.mjs tests/tianshu-discovery.test.ts",
+    "check": "npm run typecheck && npm run build && npm test"
+  },
+  "tianshu": {
+    "name": "tianshu-connect-workbuddy",
+    "version": "1.0.0",
+    "description": "把本机 WorkBuddy 账号、模型、余额和倍率接入天枢。",
+    "entry": "lib/index.js",
+    "tools": [
+      {
+        "name": "workbuddy_setup",
+        "description": "把已登录的 WorkBuddy 区域注册为天枢模型服务商。"
+      },
+      {
+        "name": "workbuddy_status",
+        "description": "查看 WorkBuddy 登录账号、余额、模型和积分倍率。"
+      },
+      {
+        "name": "workbuddy_login",
+        "description": "启动或完成 WorkBuddy 国内版/国际版网页登录。"
+      },
+      {
+        "name": "workbuddy_refresh",
+        "description": "刷新 WorkBuddy 模型目录并同步到天枢。"
+      },
+      {
+        "name": "workbuddy_test",
+        "description": "测试 WorkBuddy 本地端点或执行一次真实模型调用。"
+      }
+    ],
+    "commands": [
+      "commands"
+    ],
+    "permissions": {
+      "fs": true,
+      "net": true,
+      "shell": true
+    },
+    "minCoreVersion": ">=3.31.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "tsdown": "^0.22.2",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skyjjgw/Tianshu-connect-workbuddy.git"
+  },
+  "homepage": "https://github.com/skyjjgw/Tianshu-connect-workbuddy#readme",
+  "bugs": {
+    "url": "https://github.com/skyjjgw/Tianshu-connect-workbuddy/issues"
+  }
+}
