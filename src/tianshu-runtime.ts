@@ -264,7 +264,18 @@ export class WorkBuddyTianshuRuntime {
     const runtime = new WorkBuddyTianshuRuntime(client, stacks)
     await Promise.all(REGIONS.map(region => stacks[region].shim.ready))
     await Promise.all(REGIONS.map(region => runtime.ensurePublicServer(region)))
-    await runtime.refresh()
+    // 刷新模型列表**不能阻塞 create()**。
+    //
+    // 天枢启用插件时会等待 create() 完成，超时即报 `sidecar request timed out`
+    // 并禁用插件。而 refresh() 要向 WorkBuddy 服务器拉模型目录，每个区域超时
+    // 上限 30s（JSON_TIMEOUT_MS），两个区域串行最坏 60s+——在连不上
+    // workbuddy.cn / workbuddy.ai 的网络里必然撞上天枢的加载超时，插件就永远
+    // 启用不了。
+    //
+    // 这里只负责把本地服务拉起来（shim 端口 + Provider 注册所需的 catalog），
+    // 网络刷新交给后台：成功则 catalog 更新，失败则沿用上一次的缓存（或空目录），
+    // 都不影响插件可用。首次接入由启动时的 setup() 或用户手动 /workbuddy 触发。
+    void runtime.refresh().catch(() => { /* 后台刷新失败不影响插件启用 */ })
     runtime.refreshTimer = setInterval(() => void runtime.refresh(), REFRESH_MS)
     runtime.refreshTimer.unref()
     return runtime

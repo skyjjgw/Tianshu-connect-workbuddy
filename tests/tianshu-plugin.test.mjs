@@ -69,3 +69,26 @@ test('autostart failure is swallowed (不阻塞插件加载)', () => {
   assert.match(autostartBlock, /\.catch\(/, '注册失败必须被捕获')
   assert.doesNotMatch(autostartBlock, /await\s+getRuntime/, '不得阻塞模块加载')
 })
+
+// ── 启用耗时契约：create() 不得等待网络刷新 ─────────────────────
+//
+// 为什么锁这条：天枢启用插件时会等待 create() 完成，超时则报
+// `sidecar request timed out` 并禁用插件（真实故障，见 issue 记录）。
+// 而 refresh() 会向 WorkBuddy 服务器拉模型列表，超时上限 30s × 2 区域
+// = 最坏 60s+——网络不通的机器必然撞上天枢的加载超时。
+//
+// 因此 create() 必须只做本地的事（起端口、初始化），网络刷新放后台。
+
+test('create() 不阻塞在网络刷新上（启用耗时不随网络变化）', async () => {
+  const src = readFileSync(new URL('../src/tianshu-runtime.ts', import.meta.url), 'utf8')
+  const createBody = src.slice(
+    src.indexOf('static async create()'),
+    src.indexOf('private async proxy('),
+  )
+  // create() 里不得出现裸的 await refresh——它必须被 fire-and-forget 掉
+  assert.doesNotMatch(
+    createBody,
+    /await\s+runtime\.refresh\(\)/,
+    'create() 不得 await refresh()：网络慢会撞上天枢的插件加载超时',
+  )
+})
