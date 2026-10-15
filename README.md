@@ -39,7 +39,7 @@ https://gitee.com/skyjjgw/tianshu-connect-workbuddy
 
 ![切到 Git URL 标签，填入地址后点审阅并安装](docs/assets/install-2-giturl.png)
 
-**第 4 步**：装完在新会话里输入 `/workbuddy`，或直接对天枢说「接入 WorkBuddy」。
+**第 4 步**：差不多10几秒左右，装完后在模型厂商里查看就能看到了，或者新会话里输入 `/workbuddy`，或直接对天枢说「接入 WorkBuddy」。
 
 > **为什么用 Gitee 地址**：国内直连，不需要任何代理。GitHub 地址（`https://github.com/skyjjgw/tianshu-connect-workbuddy`）内容完全一样，但国内可能拉不动。
 
