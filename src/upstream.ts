@@ -24,7 +24,7 @@
  *   只答 `/v2`、`/console` 形态返回 HTTP 500——统一 `/v2` 即同时覆盖
  *   国内版与国际版（WorkBuddy AI）账号，区域由 `domain` 自动路由。
  *
- * @module dsh-connect-workbuddy/upstream
+ * @module tianshu-connect-workbuddy/upstream
  */
 
 import type { WorkBuddyCredential } from './auth.ts'

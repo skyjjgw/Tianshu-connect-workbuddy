@@ -12,7 +12,7 @@
  *   上游没有独立的长上下文开关或第二个模型 id，因此不会虚构 `@1m` 变体。
  *   本目录额外承载上游给出的积分倍率、多模态与推理档位。
  *
- * @module dsh-connect-workbuddy/catalog
+ * @module tianshu-connect-workbuddy/catalog
  */
 
 import type { WorkBuddyUpstreamModel } from './upstream.ts'

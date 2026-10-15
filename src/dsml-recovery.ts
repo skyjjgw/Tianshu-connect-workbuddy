@@ -67,7 +67,7 @@
  * clock. `vitest.config.ts` points `HOME`/`DSH_HOME` at an empty temp dir, so a
  * module that reached outside would simply not be testable.
  *
- * @module dsh-connect-workbuddy/dsml-recovery
+ * @module tianshu-connect-workbuddy/dsml-recovery
  */
 
 import { randomUUID } from 'node:crypto'

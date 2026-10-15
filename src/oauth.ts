@@ -21,7 +21,7 @@
  * 拿到凭据即终结。刷新凭据仍走 `refreshToken`（上游 refresh 端点），此处
  * 只负责首次取凭据。
  *
- * @module dsh-connect-workbuddy/oauth
+ * @module tianshu-connect-workbuddy/oauth
  */
 
 import { randomUUID } from 'node:crypto'

@@ -22,7 +22,7 @@
  *   「请重新登录一次」指向的是唯一无效的动作。判定只在失败路径上跑一次
  *   `diagnose()`，健康路径不付任何代价。
  *
- * @module dsh-connect-workbuddy/auth
+ * @module tianshu-connect-workbuddy/auth
  */
 
 import { mkdir, readFile, readdir, rm, stat } from 'node:fs/promises'
@@ -48,7 +48,7 @@ export interface WorkBuddyCredential {
   nickname?: string
   uin?: string
   /** Which auth file this came from; refreshes are always `dsh`. */
-  source: 'desktop' | 'dsh'
+  source: 'desktop' | 'tianshu'
   /** Absolute path of the auth file this credential was read from. */
   filePath: string
   /**
@@ -85,7 +85,7 @@ export interface WorkBuddyCredential {
  */
 export interface WorkBuddyCandidateFailure {
   path: string
-  source: 'desktop' | 'dsh'
+  source: 'desktop' | 'tianshu'
   reason: 'missing' | 'unreadable' | 'invalid' | 'encrypted' | 'wrong-region'
   message?: string
 }
@@ -97,7 +97,7 @@ export interface WorkBuddyAuthStatus {
   refreshExpiresAtMs?: number
   nickname?: string
   domain?: string
-  source?: 'desktop' | 'dsh'
+  source?: 'desktop' | 'tianshu'
 }
 
 /**
@@ -204,7 +204,7 @@ export interface WorkBuddyAccountChoice {
    */
   accountName: string
   domain: string
-  source: 'desktop' | 'dsh'
+  source: 'desktop' | 'tianshu'
   tokenExpiresAtMs: number
   /** The auth file this account was read from; newest is preferred. */
   filePath: string
@@ -336,7 +336,7 @@ function parseVaultDocumentWithWriteTime(
     ? document['refreshedFrom']
     : undefined
   return {
-    credential: { ...credential, source: 'dsh' },
+    credential: { ...credential, source: 'tianshu' },
     ...(refreshedAtMs === undefined ? {} : { refreshedAtMs }),
     ...(refreshedFrom === undefined ? {} : { refreshedFrom }),
   }
@@ -849,7 +849,7 @@ function parseOwnDocument(text: string, filePath: string): WorkBuddyCredential |
   return {
     ...credential,
     ...credential.expiresAtMs === 0 && legacyExpiry > 0 ? { expiresAtMs: legacyExpiry } : {},
-    source: 'dsh',
+    source: 'tianshu',
   }
 }
 
@@ -1420,7 +1420,7 @@ export class WorkBuddyCredentialStore {
         }
       }
       await writeVaultEntry(dir, id, credential)
-      entries.set(id, { credential: { ...credential, source: 'dsh' }, refreshedAtMs: Date.now() })
+      entries.set(id, { credential: { ...credential, source: 'tianshu' }, refreshedAtMs: Date.now() })
     }
     for (const [id, entry] of entries) {
       if (!this.matchesRegion(entry.credential.domain)) continue
@@ -1652,7 +1652,7 @@ export class WorkBuddyCredentialStore {
   /**
    * Persist one OAuth sign-in into the unified vault.
    *
-   * The credential is written with `source: 'dsh'` (it never came from a
+   * The credential is written with `source: 'tianshu'` (it never came from a
    * desktop file) and joins the readable set on the next scan — the vault is
    * read by `readAll()` like any other source, so no separate discovery path
    * exists. The write is idempotent per account id: re-adding an account
@@ -1666,7 +1666,7 @@ export class WorkBuddyCredentialStore {
     await mkdir(dir, { recursive: true })
     await writeVaultEntry(dir, id, {
       ...credential,
-      source: 'dsh',
+      source: 'tianshu',
       filePath: join(dir, `${id}.json`),
     })
     // Adding an account clears any dismissal of it. Otherwise a user who removed
@@ -1865,7 +1865,7 @@ export class WorkBuddyCredentialStore {
           ? Date.now() + outcome.expiresInSec * 1000
           : credential.expiresAtMs,
         ...outcome.domain === undefined || outcome.domain === '' ? {} : { domain: outcome.domain },
-        source: 'dsh',
+        source: 'tianshu',
       }
       // The refreshed token lands in the unified vault (one file per
       // account). The legacy per-region copy files stay READ-ONLY now: they
@@ -1974,7 +1974,7 @@ export class WorkBuddyCredentialStore {
         if (isENOENT(error)) continue
         candidates.push({
           path,
-          source: 'dsh',
+          source: 'tianshu',
           reason: 'unreadable',
           message: error instanceof Error ? error.message : String(error),
         })
@@ -1982,7 +1982,7 @@ export class WorkBuddyCredentialStore {
       }
       const parsed = parseOwnDocument(text, path)
       if (parsed === undefined || !this.matchesRegion(parsed.domain)) {
-        candidates.push({ path, source: 'dsh', reason: 'invalid', message: 'not a readable plugin-owned credential' })
+        candidates.push({ path, source: 'tianshu', reason: 'invalid', message: 'not a readable plugin-owned credential' })
         continue
       }
       // Readable and region-matching, yet no account was found: that is a
@@ -2010,7 +2010,7 @@ export class WorkBuddyCredentialStore {
           if (!isENOENT(error)) {
             candidates.push({
               path,
-              source: 'dsh',
+              source: 'tianshu',
               reason: 'unreadable',
               message: error instanceof Error ? error.message : String(error),
             })
@@ -2019,7 +2019,7 @@ export class WorkBuddyCredentialStore {
         }
         const parsed = parseVaultDocument(text, path)
         if (parsed === undefined) {
-          candidates.push({ path, source: 'dsh', reason: 'invalid', message: 'not a readable vault credential' })
+          candidates.push({ path, source: 'tianshu', reason: 'invalid', message: 'not a readable vault credential' })
         }
       }
     } catch {

@@ -11,7 +11,7 @@
  *     均由该项目设计并验证。
  * 改动：无。安全相关代码不做「改善」，原样沿用。
 
- * @module dsh-connect-workbuddy/shim
+ * @module tianshu-connect-workbuddy/shim
  */
 
 import { randomBytes, timingSafeEqual } from 'node:crypto'

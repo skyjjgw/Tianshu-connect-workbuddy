@@ -55,7 +55,7 @@
  * first, and the fallback is unreachable there. The fallback exists solely so
  * the standalone CLI is self-sufficient on a machine that has only the plugin.
  *
- * @module dsh-connect-workbuddy/host-peers
+ * @module tianshu-connect-workbuddy/host-peers
  */
 
 import { randomBytes } from 'node:crypto'

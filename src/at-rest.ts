@@ -33,7 +33,7 @@
  *   `CFBundleIdentifier` 确认身份才 `execFile`，因为**每个 Electron 应用的
  *   二进制都叫 `Electron`**，只按名字匹配就可能启动另一个产品。
  *
- * @module dsh-connect-workbuddy/at-rest
+ * @module tianshu-connect-workbuddy/at-rest
  */
 
 import { execFile, execFileSync } from 'node:child_process'
