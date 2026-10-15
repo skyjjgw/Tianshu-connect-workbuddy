@@ -475,7 +475,7 @@ class RecoveryStream {
     } catch (error: unknown) {
       // The old pass-through logged the same way and let the response end with
       // a synthesized terminator; that behaviour is preserved by `finish()`.
-      this.logger?.warn('dsh-connect-workbuddy: upstream stream failed mid-flight', error)
+      this.logger?.warn('tianshu-connect-workbuddy: upstream stream failed mid-flight', error)
     }
     const tail = this.carry
     this.carry = ''
@@ -834,7 +834,7 @@ function failoverReasonText(failure: WorkBuddyChatResult): string {
  * they chose did not answer, and why.
  */
 function failoverNoticeText(from: string, reason: string): string {
-  return `\n\n> [dsh-connect-workbuddy] 「${from}」was ${reason} — this answer came from another account\n\n`
+  return `\n\n> [tianshu-connect-workbuddy] 「${from}」was ${reason} — this answer came from another account\n\n`
 }
 
 /** One frame carrying replacement text for a frame whose content was consumed. */
@@ -979,7 +979,7 @@ export function createWorkBuddyShim(options: WorkBuddyShimOptions): WorkBuddyShi
     // to whatever the store already had, which is the user's own account — the
     // same behaviour as a plugin with no pool at all.
     await prepareAccount?.().catch(error => {
-      logger?.warn('dsh-connect-workbuddy: pool account selection failed', error)
+      logger?.warn('tianshu-connect-workbuddy: pool account selection failed', error)
     })
 
     let credential
@@ -1078,7 +1078,7 @@ export function createWorkBuddyShim(options: WorkBuddyShimOptions): WorkBuddyShi
           })
         } catch (error: unknown) {
           // Reporting is bookkeeping; it must never take down a request.
-          logger?.warn('dsh-connect-workbuddy: recording an account failure failed', error)
+          logger?.warn('tianshu-connect-workbuddy: recording an account failure failed', error)
         }
       }
     }
@@ -1112,7 +1112,7 @@ export function createWorkBuddyShim(options: WorkBuddyShimOptions): WorkBuddyShi
       })
       if (controller.signal.aborted) break
       logger?.warn(
-        `dsh-connect-workbuddy: retrying chat on another pool account after ${result.kind} (http ${result.status})`,
+        `tianshu-connect-workbuddy: retrying chat on another pool account after ${result.kind} (http ${result.status})`,
       )
       // Remember WHY the switch happened and FROM which account, so the answer
       // can carry one line saying so. Recorded here rather than only logged: the
@@ -1228,7 +1228,7 @@ export function createWorkBuddyShim(options: WorkBuddyShimOptions): WorkBuddyShi
     // because a turn that is still only markup is still being held. That is why
     // the hold exists, and why an ordinary answer never pays for it.
     if (gate !== undefined && !writer.delivered && writer.residueSeen && !controller.signal.aborted) {
-      logger?.warn('dsh-connect-workbuddy: the turn produced DSML markup only; retrying it once')
+      logger?.warn('tianshu-connect-workbuddy: the turn produced DSML markup only; retrying it once')
       const retryTried = [...triedAccountIds, workbuddyAccountId(credential)]
       let retryCredential = credential
       for (;;) {
@@ -1255,7 +1255,7 @@ export function createWorkBuddyShim(options: WorkBuddyShimOptions): WorkBuddyShi
       }
       // Nobody could be made to answer: fall back to showing what actually
       // arrived, which is the honest outcome and loses no text.
-      logger?.warn('dsh-connect-workbuddy: markup-only retry did not start; showing the original text')
+      logger?.warn('tianshu-connect-workbuddy: markup-only retry did not start; showing the original text')
     }
 
     writer.finish()

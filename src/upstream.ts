@@ -861,8 +861,8 @@ export class WorkBuddyCredentialRejectedError extends Error {
     super(
       `workbuddy: the signed-in credential was rejected by the upstream gateway (http ${status}).`
       + ' The stored token is no longer accepted — most likely a stale credential file from an earlier'
-      + ' sign-in was selected. Re-sign in to the WorkBuddy desktop app, then pick that account in the'
-      + ' plugin card. Run `dsh-connect-workbuddy doctor` to list every discovered credential.',
+      + ' sign-in was selected. Re-sign in to the WorkBuddy desktop app, then run `/workbuddy`'
+      + ' (or `tianshu-connect-workbuddy status`) to refresh the account list.',
     )
     this.name = 'WorkBuddyCredentialRejectedError'
     this.status = status

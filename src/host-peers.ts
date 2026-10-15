@@ -7,7 +7,7 @@
  * host carries them, and the plugin is supposed to borrow the host's copies.
  * Inside a booted host that works — `packages/boot/app-boot`'s runtime
  * interception layer answers those bare specifiers from the installation. But
- * `dsh plugin --profile <p> exec dsh-connect-workbuddy …` is NOT a booted host:
+ * `（DSH 环境的旧命令形态） …` is NOT a booted host:
  * `plugin-manager`'s `runProfilePnpm` spawns `pnpm exec` in the profile
  * directory with the plain environment, so the child resolves with stock Node
  * rules and the interception layer is absent (DSH deliberately never sets
@@ -19,7 +19,7 @@
  *
  *   Error [ERR_MODULE_NOT_FOUND]: Cannot find package
  *   '@deepseek-ai/dsh-atomic-write' imported from
- *   …/profiles/<p>/node_modules/dsh-connect-workbuddy/lib/host-heartbeat-*.js
+ *   …/profiles/<p>/node_modules/<plugin>/lib/host-heartbeat-*.js
  *
  * The trigger is CHUNKING, which is why the import looked unrelated to the
  * command: tsdown emits `host-heartbeat-*.js` as the shared chunk holding
