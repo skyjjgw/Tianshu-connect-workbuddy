@@ -184,11 +184,24 @@ tianshu-connect-workbuddy smoke cn glm-5.3
 ## 开发
 
 ```powershell
-pnpm install
-pnpm run check
+npm ci          # 安装依赖
+npm run check   # typecheck + build + test
 ```
 
-构建产物为 `lib/index.js`（天枢插件入口）与 `lib/cli.js`（可选 CLI），两者均自包含，不依赖 DSH 宿主包。
+也可以单独跑：
+
+```powershell
+npm run typecheck   # 类型检查
+npm run build       # 构建到 lib/
+npm test            # 运行测试（node --test，31 个用例）
+```
+
+构建产物为 `lib/index.js`（天枢插件入口）与 `lib/cli.js`（可选 CLI），两者均自包含，
+只依赖 Node 内置模块，不依赖 DSH 宿主包。
+
+> `lib/` **已入库**——因为插件入口就是它，而安装方不一定能联网构建。改完源码
+> 记得跑 `npm run build` 并提交结果，否则安装方拿到的是过期插件。CI 有一条检查
+> 会核对这一点。
 
 ## 来源与许可
 
